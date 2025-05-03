@@ -17,7 +17,7 @@ find_package(Qt6 REQUIRED COMPONENTS Core Widgets Sql)
 
 # List your source files
 set(PROJECT_SOURCES
-
+    main.cpp
     mainwindow.cpp
     mainwindow.h
     mainwindow.ui
@@ -26,8 +26,8 @@ set(PROJECT_SOURCES
 
 # Create the executable and link Qt6 modules
 add_executable(HotelReservationSQL_Application ${PROJECT_SOURCES}
-    database.cpp
     main.cpp
+    database.cpp
     database.h
 )
 
