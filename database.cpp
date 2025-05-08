@@ -5,7 +5,7 @@
 #include <QMessageBox>
 
 void testDatabaseConnection() {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QPSQL");
 
     db.setHostName("localhost");
     db.setDatabaseName("hotel_test");
@@ -32,10 +32,10 @@ void sqlDriverCheck(){
         qDebug() << driver;
     }
 
-    if (!drivers.contains("QMYSQL")) {
-        qDebug() << "MySQL/MariaDB driver is not available!";
+    if (!drivers.contains("QPSQL")) {
+        qDebug() << "Postgre SQL Driver Available!";
     } else {
-        qDebug() << "\nMySQL/MariaDB driver is available!";
+        qDebug() << "\nPostgre SQL Driver Available!";
     }
 
 }
