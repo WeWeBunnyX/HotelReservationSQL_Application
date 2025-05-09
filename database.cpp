@@ -8,9 +8,9 @@ void testDatabaseConnection() {
     QSqlDatabase db = QSqlDatabase::addDatabase("QPSQL");
 
     db.setHostName("localhost");
-    db.setDatabaseName("hotel_test");
-    db.setUserName("qtuser");
-    db.setPassword("doubleh");
+    db.setDatabaseName("postgres");
+    db.setUserName("postgres");
+    db.setPassword("bahria123");
 
     if (!db.open()) {
         qDebug() << "Database connection failed! ❌";

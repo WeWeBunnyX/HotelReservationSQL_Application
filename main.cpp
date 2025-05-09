@@ -3,6 +3,7 @@
 #include <QDebug>
 #include "database.h"
 #include "mainwindow.h"
+#include "loginscreen.h"
 
 int main(int argc, char *argv[])
 {
@@ -11,8 +12,10 @@ int main(int argc, char *argv[])
     sqlDriverCheck();
     testDatabaseConnection();
 
-    MainWindow w;
-    w.show();
+    // MainWindow w;
+    // w.show();
 
+    LoginScreen l;
+    l.show();
     return a.exec();
 }
