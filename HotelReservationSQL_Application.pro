@@ -9,15 +9,18 @@ SOURCES += \
     loginscreen.cpp \
     main.cpp \
     database.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    registerscreen.cpp
 
 HEADERS += \
     database.h \
     loginscreen.h \
-    mainwindow.h
+    mainwindow.h \
+    registerscreen.h
 
 FORMS += \
     loginscreen.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    registerscreen.ui
 
 
