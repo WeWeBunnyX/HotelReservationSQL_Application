@@ -4,14 +4,21 @@
 #include <QDebug>
 #include <QMessageBox>
 
-void testDatabaseConnection() {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QPSQL");
+void setDatabaseConnection() {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QPSQL", "main_connection");
 
     db.setHostName("localhost");
     db.setDatabaseName("postgres");
     db.setUserName("postgres");
     db.setPassword("bahria123");
 
+    attemptDatabaseConnection();
+
+
+}
+
+void attemptDatabaseConnection(){
+     QSqlDatabase db = QSqlDatabase::database("main_connection");
     if (!db.open()) {
         qDebug() << "Database connection failed! ❌";
         QMessageBox::critical(nullptr, "Connection Failed", "❌ Unable to connect to the database!");
@@ -20,9 +27,10 @@ void testDatabaseConnection() {
     } else {
         qDebug() << " Database connection successful! ✅";
         QMessageBox::information(nullptr, "Connection", "✅ Database connection successful!");
-        db.close();
+        db.open();
     }
 }
+
 
 
 void sqlDriverCheck(){
