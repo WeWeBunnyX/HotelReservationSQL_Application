@@ -2,9 +2,9 @@
 #include <QSqlDatabase>
 #include <QDebug>
 #include "database.h"
-#include "mainwindow.h"
-#include "loginscreen.h"
-#include "registerscreen.h"
+// #include "mainwindow.h"
+// #include "loginscreen.h"
+// #include "registerscreen.h"
 #include "dashboard.h"
 
 int main(int argc, char *argv[])

@@ -6,6 +6,11 @@ TEMPLATE = app
 TARGET = HotelReservationSQL_Application
 
 SOURCES += \
+    customers.cpp \
+    rooms.cpp \
+    payments.cpp \
+    reports.cpp \
+ \
     dashboard.cpp \
     loginscreen.cpp \
     main.cpp \
@@ -14,6 +19,11 @@ SOURCES += \
     registerscreen.cpp
 
 HEADERS += \
+    customers.h \
+    rooms.h \
+    payments.h \
+    reports.h \
+ \
     dashboard.h \
     database.h \
     loginscreen.h \
@@ -21,12 +31,22 @@ HEADERS += \
     registerscreen.h
 
 FORMS += \
+    customers.ui \
+    rooms.ui \
+    payments.ui \
+    reports.ui \
+ \
     dashboard.ui \
     loginscreen.ui \
     mainwindow.ui \
     registerscreen.ui
 
 RESOURCES += \
+    customers.cpp \
+    rooms.cpp \
+    payments.cpp \
+    reports.cpp \
+ \
     resources.qrc
 
 
