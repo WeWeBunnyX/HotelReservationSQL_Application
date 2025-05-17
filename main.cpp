@@ -5,6 +5,7 @@
 #include "mainwindow.h"
 #include "loginscreen.h"
 #include "registerscreen.h"
+#include "dashboard.h"
 
 int main(int argc, char *argv[])
 {
@@ -19,8 +20,11 @@ int main(int argc, char *argv[])
     // LoginScreen l;
     // l.show();
 
-    RegisterScreen r;
-    r.show();
+    //RegisterScreen r;
+    //r.show();
+
+    Dashboard d;
+    d.show();
 
     return a.exec();
 }

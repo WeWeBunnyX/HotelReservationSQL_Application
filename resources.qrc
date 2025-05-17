@@ -1,0 +1,27 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>icons/dashboard/changebar.png</file>
+        <file>icons/dashboard/changebarcolor.png</file>
+        <file>icons/dashboard/customer.png</file>
+        <file>icons/dashboard/customercolor.png</file>
+        <file>icons/dashboard/exit.png</file>
+        <file>icons/dashboard/home.png</file>
+        <file>icons/dashboard/homecolor.png</file>
+        <file>icons/dashboard/hotel.png</file>
+        <file>icons/dashboard/logoutcolor.png</file>
+        <file>icons/dashboard/payment.png</file>
+        <file>icons/dashboard/paymentcolor.png</file>
+        <file>icons/dashboard/report.png</file>
+        <file>icons/dashboard/reportcolor.png</file>
+        <file>icons/dashboard/reservation.png</file>
+        <file>icons/dashboard/reservationcolor.png</file>
+        <file>icons/dashboard/room.png</file>
+        <file>icons/dashboard/roomcolor.png</file>
+        <file>icons/dashboard/search.png</file>
+        <file>icons/dashboard/settingcolor.png</file>
+        <file>icons/dashboard/settings.png</file>
+        <file>icons/dashboard/user.png</file>
+        <file>icons/dashboard/usercolor64.png</file>
+        <file>icons/dashboard/userwhite64.png</file>
+    </qresource>
+</RCC>

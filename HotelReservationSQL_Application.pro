@@ -26,4 +26,7 @@ FORMS += \
     mainwindow.ui \
     registerscreen.ui
 
+RESOURCES += \
+    resources.qrc
+
 
