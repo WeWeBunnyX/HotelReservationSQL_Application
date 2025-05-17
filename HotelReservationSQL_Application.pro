@@ -11,20 +11,23 @@ SOURCES += \
     main.cpp \
     database.cpp \
     mainwindow.cpp \
-    registerscreen.cpp
+    registerscreen.cpp \
+    reservations.cpp
 
 HEADERS += \
     dashboard.h \
     database.h \
     loginscreen.h \
     mainwindow.h \
-    registerscreen.h
+    registerscreen.h \
+    reservations.h
 
 FORMS += \
     dashboard.ui \
     loginscreen.ui \
     mainwindow.ui \
-    registerscreen.ui
+    registerscreen.ui \
+    reservations.ui
 
 RESOURCES += \
     resources.qrc
