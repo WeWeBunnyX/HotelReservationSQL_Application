@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1207</width>
-    <height>775</height>
+    <width>1103</width>
+    <height>715</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -41,6 +41,12 @@
              <iconset resource="resource.qrc">
               <normaloff>:/icons/icons/dashboard/home.png</normaloff>:/icons/icons/dashboard/home.png</iconset>
             </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
           <item>
@@ -51,6 +57,12 @@
             <property name="icon">
              <iconset>
               <normaloff>icons/dashboard/reservation.png</normaloff>icons/dashboard/reservation.png</iconset>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -63,6 +75,12 @@
              <iconset resource="resource.qrc">
               <normaloff>:/icons/icons/dashboard/customer.png</normaloff>:/icons/icons/dashboard/customer.png</iconset>
             </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
           <item>
@@ -73,6 +91,12 @@
             <property name="icon">
              <iconset resource="resource.qrc">
               <normaloff>:/icons/icons/dashboard/room.png</normaloff>:/icons/icons/dashboard/room.png</iconset>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -85,6 +109,12 @@
              <iconset resource="resource.qrc">
               <normaloff>:/icons/icons/dashboard/payment.png</normaloff>:/icons/icons/dashboard/payment.png</iconset>
             </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
           <item>
@@ -96,6 +126,12 @@
              <iconset resource="resource.qrc">
               <normaloff>:/icons/icons/dashboard/report.png</normaloff>:/icons/icons/dashboard/report.png</iconset>
             </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
           <item>
@@ -106,6 +142,12 @@
             <property name="icon">
              <iconset resource="resource.qrc">
               <normaloff>:/icons/icons/dashboard/settings.png</normaloff>:/icons/icons/dashboard/settings.png</iconset>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -282,6 +324,9 @@
                <property name="text">
                 <string>PushButton</string>
                </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
              <item>
@@ -359,5 +404,38 @@
  <resources>
   <include location="resource.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pushButton_17</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>fullMenuWidget</receiver>
+   <slot>setHidden(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>291</x>
+     <y>46</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>248</x>
+     <y>364</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_17</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>iconOnlyWidget</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>338</x>
+     <y>39</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>92</x>
+     <y>364</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
