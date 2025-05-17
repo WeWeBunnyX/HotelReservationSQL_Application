@@ -13,14 +13,45 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QPushButton" name="btn_customers">
+      <property name="text">
+       <string>Customers</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="btn_rooms">
+      <property name="text">
+       <string>Rooms</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="btn_payments">
+      <property name="text">
+       <string>Payments</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="btn_reports">
+      <property name="text">
+       <string>Reports</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>27</height>
+     <height>18</height>
     </rect>
    </property>
   </widget>
@@ -28,4 +59,10 @@
  </widget>
  <resources/>
  <connections/>
+ <slots>
+  <slot>openCustomers()</slot>
+  <slot>openRooms()</slot>
+  <slot>openPayments()</slot>
+  <slot>openReports()</slot>
+ </slots>
 </ui>
