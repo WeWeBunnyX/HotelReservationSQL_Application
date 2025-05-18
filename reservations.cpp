@@ -25,6 +25,9 @@ Reservations::Reservations(QWidget *parent)
     ui->tableViewReservations->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tableViewReservations->setSelectionMode(QAbstractItemView::SingleSelection);
 
+    ui->dateEditCheckIn->setDate(QDate::currentDate());
+    ui->dateEditCheckOut->setDate(QDate::currentDate().addDays(1));
+
     loadUsers();
     loadRooms();
     loadReservations();
@@ -97,13 +100,29 @@ void Reservations::loadReservations()
 
     m_model->setQuery(queryStr, m_db);
 
+    m_model->setHeaderData(1, Qt::Horizontal, "User");
+    m_model->setHeaderData(2, Qt::Horizontal, "Room");
+    m_model->setHeaderData(3, Qt::Horizontal, "Check In Date");
+    m_model->setHeaderData(4, Qt::Horizontal, "Check Out Date");
+    m_model->setHeaderData(5, Qt::Horizontal, "Total Amount");
+    m_model->setHeaderData(6, Qt::Horizontal, "Payment Status");
+    m_model->setHeaderData(7, Qt::Horizontal, "Reservation Status");
+
     if (m_model->lastError().isValid()) {
         QMessageBox::critical(this, "Query Error", m_model->lastError().text());
     }
 
-
     ui->tableViewReservations->setColumnHidden(0, true);
+
+    ui->tableViewReservations->setColumnWidth(1, 120); // User
+    ui->tableViewReservations->setColumnWidth(2, 120); // Room
+    ui->tableViewReservations->setColumnWidth(3, 110); // Check In Date
+    ui->tableViewReservations->setColumnWidth(4, 130); // Check Out Date
+    ui->tableViewReservations->setColumnWidth(5, 100); // Total Amount
+    ui->tableViewReservations->setColumnWidth(6, 130); // Payment Status
+    ui->tableViewReservations->setColumnWidth(7, 100); // Reservation Status
 }
+
 
 
 
