@@ -3,12 +3,11 @@
 
 #include <QWidget>
 #include <QSqlDatabase>
-#include <QSqlTableModel>
-#include "ui_reservations.h"
+#include <QSqlQueryModel>
 
-
-QT_BEGIN_NAMESPACE
-QT_END_NAMESPACE
+namespace Ui {
+class Reservations;
+}
 
 class Reservations : public QWidget
 {
@@ -29,7 +28,7 @@ private slots:
 private:
     Ui::Reservations *ui;
     QSqlDatabase m_db;
-    QSqlTableModel *m_model;
+    QSqlQueryModel *m_model;
 
     void loadUsers();
     void loadRooms();

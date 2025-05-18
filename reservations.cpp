@@ -2,8 +2,8 @@
 #include "ui_reservations.h"
 
 #include <QSqlQuery>
-#include <QSqlRecord>
 #include <QSqlError>
+#include <QSqlRecord>
 #include <QMessageBox>
 #include <QDebug>
 #include <QDate>
@@ -20,11 +20,7 @@ Reservations::Reservations(QWidget *parent)
         return;
     }
 
-
-    m_model = new QSqlTableModel(this, m_db);
-    m_model->setTable("reservations");
-    m_model->select();
-
+    m_model = new QSqlQueryModel(this);
     ui->tableViewReservations->setModel(m_model);
     ui->tableViewReservations->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tableViewReservations->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -37,13 +33,10 @@ Reservations::Reservations(QWidget *parent)
 }
 
 
-
-
 Reservations::~Reservations()
 {
     delete ui;
 }
-
 
 
 void Reservations::loadUsers()
@@ -51,14 +44,14 @@ void Reservations::loadUsers()
     ui->comboBoxUser->clear();
 
     QSqlQuery query(m_db);
-    if (!query.exec("SELECT user_id, username FROM users ORDER BY username")) {
+    if (!query.exec("SELECT user_id, full_name FROM users ORDER BY full_name")) {
         QMessageBox::critical(this, "Database Error", query.lastError().text());
         return;
     }
 
     while (query.next()) {
-        int id = query.value(0).toInt();
-        QString name = query.value(1).toString();
+        int id = query.value("user_id").toInt();
+        QString name = query.value("full_name").toString();
         ui->comboBoxUser->addItem(name, id);
     }
 }
@@ -70,15 +63,15 @@ void Reservations::loadRooms()
     ui->comboBoxRoom->clear();
 
     QSqlQuery query(m_db);
-    if (!query.exec("SELECT room_id, room_number FROM rooms ORDER BY room_number")) {
+    if (!query.exec("SELECT room_id, room_type FROM rooms ORDER BY room_type")) {
         QMessageBox::critical(this, "Database Error", query.lastError().text());
         return;
     }
 
     while (query.next()) {
-        int id = query.value(0).toInt();
-        QString roomNum = query.value(1).toString();
-        ui->comboBoxRoom->addItem(roomNum, id);
+        int id = query.value("room_id").toInt();
+        QString roomType = query.value("room_type").toString();
+        ui->comboBoxRoom->addItem(roomType, id);
     }
 }
 
@@ -86,9 +79,31 @@ void Reservations::loadRooms()
 
 void Reservations::loadReservations()
 {
-    m_model->select();
-}
+    QString queryStr = R"(
+        SELECT
+            r.reservation_id,
+            u.full_name AS user,
+            rm.room_type AS room,
+            r.check_in_date,
+            r.check_out_date,
+            r.total_amount,
+            r.payment_status,
+            r.reservation_status
+        FROM reservations r
+        JOIN users u ON r.user_id = u.user_id
+        JOIN rooms rm ON r.room_id = rm.room_id
+        ORDER BY r.check_in_date DESC
+    )";
 
+    m_model->setQuery(queryStr, m_db);
+
+    if (m_model->lastError().isValid()) {
+        QMessageBox::critical(this, "Query Error", m_model->lastError().text());
+    }
+
+
+    ui->tableViewReservations->setColumnHidden(0, true);
+}
 
 
 
@@ -101,7 +116,6 @@ void Reservations::clearForm()
     ui->spinBoxAmount->setValue(0.00);
     ui->comboBoxPayment->setCurrentIndex(-1);
     ui->comboBoxStatus->setCurrentIndex(-1);
-
     ui->tableViewReservations->clearSelection();
 }
 
@@ -109,23 +123,23 @@ void Reservations::clearForm()
 
 void Reservations::populateForm(int row)
 {
-    if(row < 0 || row >= m_model->rowCount())
+    if (row < 0 || row >= m_model->rowCount())
         return;
 
     QSqlRecord record = m_model->record(row);
 
-    int userId = record.value("user_id").toInt();
-    int roomId = record.value("room_id").toInt();
+    QString userName = record.value("user").toString();
+    QString roomType = record.value("room").toString();
     QDate checkIn = record.value("check_in_date").toDate();
     QDate checkOut = record.value("check_out_date").toDate();
     double amount = record.value("total_amount").toDouble();
     QString payment = record.value("payment_status").toString();
     QString status = record.value("reservation_status").toString();
 
-    int userIndex = ui->comboBoxUser->findData(userId);
+    int userIndex = ui->comboBoxUser->findText(userName);
     ui->comboBoxUser->setCurrentIndex(userIndex);
 
-    int roomIndex = ui->comboBoxRoom->findData(roomId);
+    int roomIndex = ui->comboBoxRoom->findText(roomType);
     ui->comboBoxRoom->setCurrentIndex(roomIndex);
 
     ui->dateEditCheckIn->setDate(checkIn);
@@ -141,9 +155,13 @@ void Reservations::populateForm(int row)
 
 
 
-
 void Reservations::on_btnAdd_clicked()
 {
+    if (ui->comboBoxUser->currentIndex() == -1 || ui->comboBoxRoom->currentIndex() == -1) {
+        QMessageBox::warning(this, "Input Error", "Please select both a user and a room.");
+        return;
+    }
+
     int userId = ui->comboBoxUser->currentData().toInt();
     int roomId = ui->comboBoxRoom->currentData().toInt();
     QDate checkIn = ui->dateEditCheckIn->date();
@@ -178,7 +196,6 @@ void Reservations::on_btnAdd_clicked()
 
 
 
-
 void Reservations::on_btnUpdate_clicked()
 {
     QModelIndexList selected = ui->tableViewReservations->selectionModel()->selectedRows();
@@ -187,8 +204,14 @@ void Reservations::on_btnUpdate_clicked()
         return;
     }
 
-    int row = selected.first().row();
+    QModelIndex index = selected.first();
+    int row = index.row();
     int reservationId = m_model->record(row).value("reservation_id").toInt();
+
+    if (ui->comboBoxUser->currentIndex() == -1 || ui->comboBoxRoom->currentIndex() == -1) {
+        QMessageBox::warning(this, "Input Error", "Please select both a user and a room.");
+        return;
+    }
 
     int userId = ui->comboBoxUser->currentData().toInt();
     int roomId = ui->comboBoxRoom->currentData().toInt();
@@ -203,7 +226,6 @@ void Reservations::on_btnUpdate_clicked()
         return;
     }
 
-
     QSqlQuery query(m_db);
     query.prepare("UPDATE reservations SET user_id=:user_id, room_id=:room_id, check_in_date=:check_in, check_out_date=:check_out, "
                   "total_amount=:amount, payment_status=:payment, reservation_status=:status WHERE reservation_id=:id");
@@ -216,7 +238,7 @@ void Reservations::on_btnUpdate_clicked()
     query.bindValue(":status", status);
     query.bindValue(":id", reservationId);
 
-    if(!query.exec()) {
+    if (!query.exec()) {
         QMessageBox::critical(this, "Database Error", query.lastError().text());
     } else {
         loadReservations();
@@ -237,12 +259,14 @@ void Reservations::on_btnDelete_clicked()
     int row = selected.first().row();
     int reservationId = m_model->record(row).value("reservation_id").toInt();
 
-    if(QMessageBox::question(this, "Confirm Delete", "Are you sure you want to delete this reservation?") == QMessageBox::Yes) {
+    if (QMessageBox::question(this, "Confirm Delete", "Are you sure you want to delete this reservation?") == QMessageBox::Yes)
+
+    {
         QSqlQuery query(m_db);
         query.prepare("DELETE FROM reservations WHERE reservation_id = :id");
         query.bindValue(":id", reservationId);
 
-        if(!query.exec()) {
+        if (!query.exec()) {
             QMessageBox::critical(this, "Database Error", query.lastError().text());
         } else {
             loadReservations();
@@ -258,6 +282,7 @@ void Reservations::on_btnClear_clicked()
     clearForm();
 }
 
+
 void Reservations::on_btnRefresh_clicked()
 {
     loadUsers();
@@ -265,6 +290,7 @@ void Reservations::on_btnRefresh_clicked()
     loadReservations();
     clearForm();
 }
+
 
 void Reservations::on_tableViewReservations_clicked(const QModelIndex &index)
 {
