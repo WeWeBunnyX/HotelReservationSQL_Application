@@ -2,8 +2,8 @@
 #define DASHBOARD_H
 
 #include <QWidget>
-#include <QPushButton>
-#include "customers.h"  // Include CustomersModule
+#include "customers.h"
+#include "payments.h"
 
 namespace Ui {
 class Dashboard;
@@ -18,11 +18,12 @@ public:
     ~Dashboard();
 
 private slots:
-    void onMenuButtonToggled(bool checked);  // Handles all toggle buttons
+    void onMenuButtonToggled(bool checked);
 
 private:
     Ui::Dashboard *ui;
-    CustomersModule *customersModule;  // Customers module pointer
+    CustomersModule *customersModule;
+    PaymentsModule *paymentsModule;
 };
 
 #endif // DASHBOARD_H
