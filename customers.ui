@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>389</width>
     <height>600</height>
    </rect>
   </property>
@@ -16,14 +16,14 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QLabel" name="titleLabel">
+     <property name="styleSheet">
+      <string notr="true">font-weight: bold; font-size: 18px;</string>
+     </property>
      <property name="text">
       <string>Customer Management</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">font-weight: bold; font-size: 18px;</string>
+      <set>Qt::AlignmentFlag::AlignCenter</set>
      </property>
     </widget>
    </item>
