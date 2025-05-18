@@ -396,7 +396,7 @@
            <item row="1" column="0">
             <widget class="QStackedWidget" name="stackedWidget">
              <property name="currentIndex">
-              <number>6</number>
+              <number>1</number>
              </property>
              <widget class="QWidget" name="homePage">
               <layout class="QGridLayout" name="gridLayout_3">
@@ -430,7 +430,7 @@
                </item>
               </layout>
              </widget>
-             <widget class="QWidget" name="reservationPage">
+             <widget class="Reservations" name="reservationPage">
               <property name="font">
                <font>
                 <pointsize>23</pointsize>
@@ -460,7 +460,7 @@
                   </font>
                  </property>
                  <property name="text">
-                  <string>Reservations Page</string>
+                  <string/>
                  </property>
                 </widget>
                </item>
@@ -858,6 +858,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Reservations</class>
+   <extends>QWidget</extends>
+   <header>reservations.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="resources.qrc"/>
  </resources>
