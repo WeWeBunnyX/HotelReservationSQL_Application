@@ -6,20 +6,47 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>800</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>PaymentsModule</string>
+   <string>Payments</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="labelTitle">
      <property name="text">
-      <string>Welcome to PaymentsModule</string>
+      <string>Payments</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font-size: 24px; font-weight: bold;</string>
      </property>
     </widget>
+   </item>
+   <item>
+    <widget class="QTableWidget" name="tablePayments"/>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="buttonLayout">
+     <item>
+      <widget class="QPushButton" name="refreshButton">
+       <property name="text">
+        <string>Refresh</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="markPaidButton">
+       <property name="text">
+        <string>Mark as Paid</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
