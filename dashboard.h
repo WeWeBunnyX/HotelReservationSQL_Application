@@ -15,6 +15,9 @@ public:
     explicit Dashboard(QWidget *parent = nullptr);
     ~Dashboard();
 
+private slots:
+    void onMenuButtonToggled(bool checked);
+
 private:
     Ui::Dashboard *ui;
 };

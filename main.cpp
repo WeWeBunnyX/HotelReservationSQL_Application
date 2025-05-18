@@ -24,11 +24,11 @@ int main(int argc, char *argv[])
     //RegisterScreen r;
     //r.show();
 
-    // Dashboard d;
-    // d.show();
+    Dashboard d;
+    d.show();
 
-    Reservations r;
-    r.show();
+    // Reservations r;
+    // r.show();
 
     return a.exec();
 }
