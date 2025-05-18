@@ -1,39 +1,99 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>PaymentsModule</class>
- <widget class="QWidget" name="paymentsWidget">
+ <widget class="QWidget" name="PaymentsModule">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>389</width>
+    <height>287</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Payments</string>
+   <string>Payments Module</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="mainLayout">
    <item>
-    <widget class="QLabel" name="labelTitle">
+    <widget class="QLabel" name="titleLabel">
+     <property name="styleSheet">
+      <string notr="true">font-size: 20pt; font-weight: bold; padding: 10px;</string>
+     </property>
      <property name="text">
       <string>Payments</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">font-size: 24px; font-weight: bold;</string>
+      <set>Qt::AlignmentFlag::AlignCenter</set>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QTableWidget" name="tablePayments"/>
+    <widget class="QTableWidget" name="tablePayments">
+     <property name="styleSheet">
+      <string notr="true">font-size: 10pt;</string>
+     </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+     </property>
+     <property name="rowCount">
+      <number>0</number>
+     </property>
+     <property name="columnCount">
+      <number>5</number>
+     </property>
+     <column>
+      <property name="text">
+       <string>Payment ID</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Customer Name</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Reservation ID</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Amount</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Status</string>
+      </property>
+     </column>
+    </widget>
    </item>
    <item>
     <layout class="QHBoxLayout" name="buttonLayout">
      <item>
+      <spacer name="spacerLeft">
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
       <widget class="QPushButton" name="refreshButton">
+       <property name="styleSheet">
+        <string notr="true">padding: 6px 12px; font-weight: bold;</string>
+       </property>
        <property name="text">
         <string>Refresh</string>
        </property>
@@ -41,10 +101,26 @@
      </item>
      <item>
       <widget class="QPushButton" name="markPaidButton">
+       <property name="styleSheet">
+        <string notr="true">padding: 6px 12px; font-weight: bold;</string>
+       </property>
        <property name="text">
         <string>Mark as Paid</string>
        </property>
       </widget>
+     </item>
+     <item>
+      <spacer name="spacerRight">
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
      </item>
     </layout>
    </item>
