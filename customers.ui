@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>389</width>
+    <width>727</width>
     <height>600</height>
    </rect>
   </property>
@@ -47,6 +47,9 @@
    </item>
    <item>
     <widget class="QTableWidget" name="customersTable">
+     <attribute name="horizontalHeaderStretchLastSection">
+      <bool>true</bool>
+     </attribute>
      <column>
       <property name="text">
        <string>ID</string>
