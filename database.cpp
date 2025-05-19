@@ -18,7 +18,7 @@ void setDatabaseConnection() {
 }
 
 void attemptDatabaseConnection(){
-     QSqlDatabase db = QSqlDatabase::database("main_connection");
+    QSqlDatabase db = QSqlDatabase::database("main_connection");
     if (!db.open()) {
         qDebug() << "Database connection failed! ❌";
         QMessageBox::critical(nullptr, "Connection Failed", "❌ Unable to connect to the database!");
