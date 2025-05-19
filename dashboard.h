@@ -26,4 +26,4 @@ private:
     PaymentsModule *paymentsModule;
 };
 
-#endif // DASHBOARD_H
+#endif
