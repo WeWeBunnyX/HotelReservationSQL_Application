@@ -64,4 +64,16 @@
 -- (2, 2, 4, 'Good experience, but room was a bit small.', '2025-05-14');
 
 
+-- CREATE TABLE customers (
+--     customer_id SERIAL PRIMARY KEY,
+--     user_id INTEGER NOT NULL UNIQUE REFERENCES users(user_id) ON DELETE CASCADE,
+--     loyalty_points INTEGER DEFAULT 0 CHECK (loyalty_points >= 0),
+--     preferred_room_type VARCHAR(50),
+--     last_stay_date DATE,
+--     marketing_consent BOOLEAN DEFAULT FALSE
+-- );
 
+-- INSERT INTO customers (user_id)
+-- SELECT user_id
+-- FROM users
+-- WHERE role = 'Customer';
