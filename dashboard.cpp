@@ -52,18 +52,18 @@ void Dashboard::onMenuButtonToggled(bool checked)
     qDebug() << "Button toggled:" << button->objectName() << "Checked:" << checked;
 
     if (button == ui->homeButton_1 || button == ui->homeButton_2) {
-        ui->stackedWidget->setCurrentIndex(0);
+        ui->stackedWidget->setCurrentIndex(0); // homePage
     } else if (button == ui->reservationButton_1 || button == ui->reservationButton_2) {
-        ui->stackedWidget->setCurrentIndex(1);
+        ui->stackedWidget->setCurrentIndex(1); // reservationPage
     } else if (button == ui->customerButton_1 || button == ui->customerButton_2) {
-        ui->stackedWidget->setCurrentIndex(2);
+        ui->stackedWidget->setCurrentIndex(2); // customersModule
     } else if (button == ui->roomButton_1 || button == ui->roomButton_2) {
-        ui->stackedWidget->setCurrentIndex(3);
+        ui->stackedWidget->setCurrentIndex(5); // roomPage
     } else if (button == ui->paymentButton_1 || button == ui->paymentButton_2) {
-        ui->stackedWidget->setCurrentIndex(4);
+        ui->stackedWidget->setCurrentIndex(4); // paymentsModule
     } else if (button == ui->reportButton_1 || button == ui->reportButton_2) {
-        ui->stackedWidget->setCurrentIndex(5);
+        ui->stackedWidget->setCurrentIndex(7); // reportPage
     } else if (button == ui->settingButton_1 || button == ui->settingButton_2) {
-        ui->stackedWidget->setCurrentIndex(6);
+        ui->stackedWidget->setCurrentIndex(8); // settingPage
     }
 }

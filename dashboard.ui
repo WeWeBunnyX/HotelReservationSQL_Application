@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1146</width>
-    <height>715</height>
+    <height>716</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -396,7 +396,7 @@
            <item row="1" column="0">
             <widget class="QStackedWidget" name="stackedWidget">
              <property name="currentIndex">
-              <number>2</number>
+              <number>3</number>
              </property>
              <widget class="QWidget" name="homePage">
               <layout class="QGridLayout" name="gridLayout_3">
@@ -497,13 +497,8 @@
                </item>
               </layout>
              </widget>
-             <widget class="QWidget" name="roomPage">
-              <property name="font">
-               <font>
-                <pointsize>23</pointsize>
-               </font>
-              </property>
-              <layout class="QGridLayout" name="gridLayout_7">
+             <widget class="RoomsModule" name="roomPage">
+              <layout class="QGridLayout" name="gridLayout_9">
                <property name="leftMargin">
                 <number>300</number>
                </property>
@@ -521,8 +516,13 @@
                </property>
                <item row="0" column="0">
                 <widget class="QLabel" name="roomPageLabel">
+                 <property name="font">
+                  <font>
+                   <pointsize>23</pointsize>
+                  </font>
+                 </property>
                  <property name="text">
-                  <string>Rooms</string>
+                  <string/>
                  </property>
                 </widget>
                </item>
@@ -559,8 +559,13 @@
                </item>
               </layout>
              </widget>
-             <widget class="QWidget" name="reportPage">
-              <layout class="QGridLayout" name="gridLayout_9">
+             <widget class="QWidget" name="reportsPage">
+              <property name="font">
+               <font>
+                <pointsize>23</pointsize>
+               </font>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_7">
                <property name="leftMargin">
                 <number>300</number>
                </property>
@@ -577,14 +582,9 @@
                 <number>0</number>
                </property>
                <item row="0" column="0">
-                <widget class="QLabel" name="reportPageLabel">
-                 <property name="font">
-                  <font>
-                   <pointsize>23</pointsize>
-                  </font>
-                 </property>
+                <widget class="QLabel" name="reportsPageLabel">
                  <property name="text">
-                  <string>Reports Page</string>
+                  <string>Reports</string>
                  </property>
                 </widget>
                </item>
@@ -863,6 +863,12 @@
    <class>Reservations</class>
    <extends>QWidget</extends>
    <header>reservations.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>RoomsModule</class>
+   <extends>QWidget</extends>
+   <header>rooms.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
