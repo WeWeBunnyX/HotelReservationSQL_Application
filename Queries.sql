@@ -77,3 +77,15 @@
 -- SELECT user_id
 -- FROM users
 -- WHERE role = 'Customer';
+
+ALTER TABLE reservations
+ADD COLUMN payment_method VARCHAR(20),
+ADD COLUMN payment_date DATE,
+ADD COLUMN transaction_id VARCHAR(50),
+ADD COLUMN payment_notes TEXT,
+ADD CONSTRAINT reservations_payment_method_check 
+    CHECK (payment_method IN ('Card', 'Cash', 'Online', 'Other'));
+
+CREATE UNIQUE INDEX transaction_id_idx ON reservations(transaction_id);
+
+
