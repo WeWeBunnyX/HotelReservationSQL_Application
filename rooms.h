@@ -28,7 +28,7 @@ private:
     Ui::RoomsModule *ui;
     QSqlDatabase m_db;
     QSqlQueryModel *m_model;
-
+    bool m_isProcessing;
     void loadRooms(const QString &filter = QString());
 };
 
