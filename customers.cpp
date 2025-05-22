@@ -337,7 +337,6 @@ void CustomersModule::onEditButtonClicked()
 
 
 
-
 void CustomersModule::onDeleteButtonClicked()
 {
     QModelIndexList selectedRows = ui->customersTable->selectionModel()->selectedRows();

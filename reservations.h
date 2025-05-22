@@ -24,6 +24,7 @@ private slots:
     void on_btnClear_clicked();
     void on_btnRefresh_clicked();
     void on_tableViewReservations_clicked(const QModelIndex &index);
+    void on_comboBoxUser_currentIndexChanged(int index);
 
 private:
     Ui::Reservations *ui;
