@@ -396,7 +396,7 @@
            <item row="1" column="0">
             <widget class="QStackedWidget" name="stackedWidget">
              <property name="currentIndex">
-              <number>3</number>
+              <number>5</number>
              </property>
              <widget class="QWidget" name="homePage">
               <layout class="QGridLayout" name="gridLayout_3">
@@ -559,7 +559,7 @@
                </item>
               </layout>
              </widget>
-             <widget class="QWidget" name="reportsPage">
+             <widget class="ReportsModule" name="reportsPage">
               <property name="font">
                <font>
                 <pointsize>23</pointsize>
@@ -584,7 +584,7 @@
                <item row="0" column="0">
                 <widget class="QLabel" name="reportsPageLabel">
                  <property name="text">
-                  <string>Reports</string>
+                  <string/>
                  </property>
                 </widget>
                </item>
@@ -869,6 +869,12 @@
    <class>RoomsModule</class>
    <extends>QWidget</extends>
    <header>rooms.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ReportsModule</class>
+   <extends>QWidget</extends>
+   <header>reports.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ReportsModule</class>
- <widget class="QWidget" name="reportsWidget">
+ <class>Reports</class>
+ <widget class="QWidget" name="Reports">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,13 +10,13 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>ReportsModule</string>
+   <string>Reports</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="label">
+    <widget class="QPushButton" name="showChartsButton">
      <property name="text">
-      <string>Welcome to ReportsModule</string>
+      <string>Show Charts</string>
      </property>
     </widget>
    </item>
