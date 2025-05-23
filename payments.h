@@ -34,7 +34,7 @@ private:
     void loadPayments(const QString &filter = QString());
     void populateReservationComboBox();
     void clearForm();
-    bool validateForm(int &reservationId, double &amount, QString &method, QDate &date);
+    bool validateForm(int &reservationId, double &amount, QString &paymentStatus, QString &method, QDate &date, QString &transactionId, QString &notes);
     void setupConnections();
 };
 

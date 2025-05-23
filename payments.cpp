@@ -70,20 +70,22 @@ void PaymentsModule::loadPayments(const QString &filter)
 
     QString queryStr = R"(
         SELECT
-            p.payment_id,
-            p.reservation_id,
-            p.amount,
-            p.payment_method,
-            p.payment_date
-        FROM payments p
+            r.reservation_id,
+            r.total_amount,
+            r.payment_status,
+            r.payment_method,
+            r.payment_date,
+            r.transaction_id,
+            r.payment_notes
+        FROM reservations r
         WHERE 1=1
     )";
 
     if (!filter.isEmpty()) {
-        queryStr += " AND CAST(p.reservation_id AS TEXT) LIKE :filter";
+        queryStr += " AND CAST(r.reservation_id AS TEXT) LIKE :filter";
     }
 
-    queryStr += " ORDER BY p.payment_date DESC";
+    queryStr += " ORDER BY r.reservation_id DESC";
 
     QSqlQuery query(m_db);
     query.prepare(queryStr);
@@ -104,17 +106,21 @@ void PaymentsModule::loadPayments(const QString &filter)
         return;
     }
 
-    m_model->setHeaderData(0, Qt::Horizontal, "Payment ID");
-    m_model->setHeaderData(1, Qt::Horizontal, "Reservation ID");
-    m_model->setHeaderData(2, Qt::Horizontal, "Amount");
+    m_model->setHeaderData(0, Qt::Horizontal, "Reservation ID");
+    m_model->setHeaderData(1, Qt::Horizontal, "Amount");
+    m_model->setHeaderData(2, Qt::Horizontal, "Payment Status");
     m_model->setHeaderData(3, Qt::Horizontal, "Payment Method");
     m_model->setHeaderData(4, Qt::Horizontal, "Payment Date");
+    m_model->setHeaderData(5, Qt::Horizontal, "Transaction ID");
+    m_model->setHeaderData(6, Qt::Horizontal, "Notes");
 
     ui->tablePayments->setColumnHidden(0, true);
-    ui->tablePayments->setColumnWidth(1, 120);
+    ui->tablePayments->setColumnWidth(1, 100);
     ui->tablePayments->setColumnWidth(2, 100);
-    ui->tablePayments->setColumnWidth(3, 150);
+    ui->tablePayments->setColumnWidth(3, 120);
     ui->tablePayments->setColumnWidth(4, 120);
+    ui->tablePayments->setColumnWidth(5, 150);
+    ui->tablePayments->setColumnWidth(6, 200);
 
     qDebug() << "Loaded" << m_model->rowCount() << "payments";
 }
@@ -147,15 +153,18 @@ void PaymentsModule::populateReservationComboBox()
 
 void PaymentsModule::clearForm()
 {
-    ui->lineEditPaymentID->clear();
+    ui->lineEditReservationID->clear();
     ui->comboBoxReservationID->setCurrentIndex(0);
     ui->lineEditAmount->clear();
+    ui->comboBoxPaymentStatus->setCurrentIndex(0);
     ui->comboBoxPaymentMethod->setCurrentIndex(0);
     ui->dateEditPaymentDate->setDate(QDate::currentDate());
+    ui->lineEditTransactionID->clear();
+    ui->textEditPaymentNotes->clear();
     qDebug() << "Form cleared";
 }
 
-bool PaymentsModule::validateForm(int &reservationId, double &amount, QString &method, QDate &date)
+bool PaymentsModule::validateForm(int &reservationId, double &amount, QString &paymentStatus, QString &method, QDate &date, QString &transactionId, QString &notes)
 {
     bool ok;
     reservationId = ui->comboBoxReservationID->currentText().toInt(&ok);
@@ -165,8 +174,14 @@ bool PaymentsModule::validateForm(int &reservationId, double &amount, QString &m
     }
 
     amount = ui->lineEditAmount->text().toDouble(&ok);
-    if (!ok || amount <= 0) {
-        QMessageBox::warning(this, "Input Error", "Amount must be a positive number.");
+    if (!ok || amount < 0) {
+        QMessageBox::warning(this, "Input Error", "Amount must be a non-negative number.");
+        return false;
+    }
+
+    paymentStatus = ui->comboBoxPaymentStatus->currentText();
+    if (paymentStatus.isEmpty()) {
+        QMessageBox::warning(this, "Input Error", "Payment Status is required.");
         return false;
     }
 
@@ -181,6 +196,20 @@ bool PaymentsModule::validateForm(int &reservationId, double &amount, QString &m
         QMessageBox::warning(this, "Input Error", "Invalid Payment Date.");
         return false;
     }
+
+    transactionId = ui->lineEditTransactionID->text().trimmed();
+    if (!transactionId.isEmpty()) {
+        QSqlQuery checkQuery(m_db);
+        checkQuery.prepare("SELECT reservation_id FROM reservations WHERE transaction_id = :transaction_id AND reservation_id != :reservation_id");
+        checkQuery.bindValue(":transaction_id", transactionId);
+        checkQuery.bindValue(":reservation_id", reservationId);
+        if (checkQuery.exec() && checkQuery.next()) {
+            QMessageBox::warning(this, "Input Error", "Transaction ID already exists.");
+            return false;
+        }
+    }
+
+    notes = ui->textEditPaymentNotes->toPlainText().trimmed();
 
     return true;
 }
@@ -200,9 +229,13 @@ void PaymentsModule::on_buttonAdd_clicked()
 
     int reservationId;
     double amount;
+    QString paymentStatus;
     QString method;
     QDate date;
-    if (!validateForm(reservationId, amount, method, date)) {
+    QString transactionId;
+    QString notes;
+
+    if (!validateForm(reservationId, amount, paymentStatus, method, date, transactionId, notes)) {
         ui->buttonAdd->setEnabled(true);
         connect(ui->buttonAdd, &QPushButton::clicked, this, &PaymentsModule::on_buttonAdd_clicked);
         isProcessing = false;
@@ -215,11 +248,14 @@ void PaymentsModule::on_buttonAdd_clicked()
     dialog.setAttribute(Qt::WA_NativeWindow, true);
 
     QVBoxLayout layout(&dialog);
-    QLabel label(QString("Add payment of $%1 for Reservation %2 via %3 on %4?")
+    QLabel label(QString("Add payment of $%1 for Reservation %2 (%3) via %4 on %5?%6%7")
                  .arg(amount, 0, 'f', 2)
                  .arg(reservationId)
+                 .arg(paymentStatus)
                  .arg(method)
-                 .arg(date.toString(Qt::ISODate)), &dialog);
+                 .arg(date.toString(Qt::ISODate))
+                 .arg(transactionId.isEmpty() ? "" : "\nTransaction ID: " + transactionId)
+                 .arg(notes.isEmpty() ? "" : "\nNotes: " + notes), &dialog);
     layout.addWidget(&label);
 
     QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dialog);
@@ -256,12 +292,29 @@ void PaymentsModule::on_buttonAdd_clicked()
 
         m_db.transaction();
         QSqlQuery insertQuery(m_db);
-        insertQuery.prepare("INSERT INTO payments (reservation_id, amount, payment_method, payment_date) "
-                           "VALUES (:reservation_id, :amount, :payment_method, :payment_date)");
+        insertQuery.prepare(R"(
+            INSERT INTO reservations (
+                reservation_id, user_id, room_id, check_in_date, check_out_date,
+                total_amount, payment_status, reservation_status, payment_method,
+                payment_date, transaction_id, payment_notes
+            ) VALUES (
+                :reservation_id, :user_id, :room_id, :check_in_date, :check_out_date,
+                :total_amount, :payment_status, :reservation_status, :payment_method,
+                :payment_date, :transaction_id, :payment_notes
+            )
+        )");
         insertQuery.bindValue(":reservation_id", reservationId);
-        insertQuery.bindValue(":amount", amount);
+        insertQuery.bindValue(":user_id", 1); // Placeholder: Adjust based on your logic
+        insertQuery.bindValue(":room_id", 1); // Placeholder: Adjust based on your logic
+        insertQuery.bindValue(":check_in_date", QDate::currentDate());
+        insertQuery.bindValue(":check_out_date", QDate::currentDate().addDays(1));
+        insertQuery.bindValue(":total_amount", amount);
+        insertQuery.bindValue(":payment_status", paymentStatus);
+        insertQuery.bindValue(":reservation_status", "Confirmed");
         insertQuery.bindValue(":payment_method", method);
         insertQuery.bindValue(":payment_date", date);
+        insertQuery.bindValue(":transaction_id", transactionId.isEmpty() ? QVariant(QVariant::String) : transactionId);
+        insertQuery.bindValue(":payment_notes", notes.isEmpty() ? QVariant(QVariant::String) : notes);
 
         if (!insertQuery.exec()) {
             m_db.rollback();
@@ -277,7 +330,7 @@ void PaymentsModule::on_buttonAdd_clicked()
             return;
         }
 
-        qDebug() << "Payment added: Reservation" << reservationId << amount << method << date;
+        qDebug() << "Payment added: Reservation" << reservationId << amount << paymentStatus << method << date;
         loadPayments(ui->lineEditSearch->text());
         clearForm();
     }
@@ -306,13 +359,16 @@ void PaymentsModule::on_buttonUpdate_clicked()
     }
 
     int row = selected.first().row();
-    int paymentId = m_model->data(m_model->index(row, 0)).toInt();
+    int reservationId = m_model->data(m_model->index(row, 0)).toInt();
 
-    int reservationId;
     double amount;
+    QString paymentStatus;
     QString method;
     QDate date;
-    if (!validateForm(reservationId, amount, method, date)) {
+    QString transactionId;
+    QString notes;
+
+    if (!validateForm(reservationId, amount, paymentStatus, method, date, transactionId, notes)) {
         ui->buttonUpdate->setEnabled(true);
         connect(ui->buttonUpdate, &QPushButton::clicked, this, &PaymentsModule::on_buttonUpdate_clicked);
         isProcessing = false;
@@ -325,12 +381,14 @@ void PaymentsModule::on_buttonUpdate_clicked()
     dialog.setAttribute(Qt::WA_NativeWindow, true);
 
     QVBoxLayout layout(&dialog);
-    QLabel label(QString("Update payment ID %1 to $%2 for Reservation %3 via %4 on %5?")
-                 .arg(paymentId)
-                 .arg(amount, 0, 'f', 2)
+    QLabel label(QString("Update payment for Reservation %1 to $%2 (%3) via %4 on %5?%6%7")
                  .arg(reservationId)
+                 .arg(amount, 0, 'f', 2)
+                 .arg(paymentStatus)
                  .arg(method)
-                 .arg(date.toString(Qt::ISODate)), &dialog);
+                 .arg(date.toString(Qt::ISODate))
+                 .arg(transactionId.isEmpty() ? "" : "\nTransaction ID: " + transactionId)
+                 .arg(notes.isEmpty() ? "" : "\nNotes: " + notes), &dialog);
     layout.addWidget(&label);
 
     QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dialog);
@@ -367,14 +425,23 @@ void PaymentsModule::on_buttonUpdate_clicked()
 
         m_db.transaction();
         QSqlQuery updateQuery(m_db);
-        updateQuery.prepare("UPDATE payments SET reservation_id = :reservation_id, amount = :amount, "
-                           "payment_method = :payment_method, payment_date = :payment_date "
-                           "WHERE payment_id = :payment_id");
-        updateQuery.bindValue(":reservation_id", reservationId);
-        updateQuery.bindValue(":amount", amount);
+        updateQuery.prepare(R"(
+            UPDATE reservations
+            SET total_amount = :total_amount,
+                payment_status = :payment_status,
+                payment_method = :payment_method,
+                payment_date = :payment_date,
+                transaction_id = :transaction_id,
+                payment_notes = :payment_notes
+            WHERE reservation_id = :reservation_id
+        )");
+        updateQuery.bindValue(":total_amount", amount);
+        updateQuery.bindValue(":payment_status", paymentStatus);
         updateQuery.bindValue(":payment_method", method);
         updateQuery.bindValue(":payment_date", date);
-        updateQuery.bindValue(":payment_id", paymentId);
+        updateQuery.bindValue(":transaction_id", transactionId.isEmpty() ? QVariant(QVariant::String) : transactionId);
+        updateQuery.bindValue(":payment_notes", notes.isEmpty() ? QVariant(QVariant::String) : notes);
+        updateQuery.bindValue(":reservation_id", reservationId);
 
         if (!updateQuery.exec()) {
             m_db.rollback();
@@ -390,7 +457,7 @@ void PaymentsModule::on_buttonUpdate_clicked()
             return;
         }
 
-        qDebug() << "Payment updated: ID" << paymentId << reservationId << amount << method << date;
+        qDebug() << "Payment updated: Reservation" << reservationId << amount << paymentStatus << method << date;
         loadPayments(ui->lineEditSearch->text());
         clearForm();
     }
@@ -419,7 +486,7 @@ void PaymentsModule::on_buttonDelete_clicked()
     }
 
     int row = selected.first().row();
-    int paymentId = m_model->data(m_model->index(row, 0)).toInt();
+    int reservationId = m_model->data(m_model->index(row, 0)).toInt();
 
     QDialog dialog(nullptr);
     dialog.setWindowTitle("Delete Payment");
@@ -427,7 +494,7 @@ void PaymentsModule::on_buttonDelete_clicked()
     dialog.setAttribute(Qt::WA_NativeWindow, true);
 
     QVBoxLayout layout(&dialog);
-    QLabel label("Are you sure you want to delete this payment?", &dialog);
+    QLabel label(QString("Are you sure you want to delete payment details for Reservation %1?").arg(reservationId), &dialog);
     layout.addWidget(&label);
 
     QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dialog);
@@ -464,8 +531,10 @@ void PaymentsModule::on_buttonDelete_clicked()
 
         m_db.transaction();
         QSqlQuery deleteQuery(m_db);
-        deleteQuery.prepare("DELETE FROM payments WHERE payment_id = :payment_id");
-        deleteQuery.bindValue(":payment_id", paymentId);
+        deleteQuery.prepare("UPDATE reservations SET total_amount = 0, payment_status = 'Pending', "
+                           "payment_method = NULL, payment_date = NULL, transaction_id = NULL, "
+                           "payment_notes = NULL WHERE reservation_id = :reservation_id");
+        deleteQuery.bindValue(":reservation_id", reservationId);
 
         if (!deleteQuery.exec()) {
             m_db.rollback();
@@ -481,7 +550,7 @@ void PaymentsModule::on_buttonDelete_clicked()
             return;
         }
 
-        qDebug() << "Payment deleted: ID" << paymentId;
+        qDebug() << "Payment deleted: Reservation" << reservationId;
         loadPayments(ui->lineEditSearch->text());
         clearForm();
     }
@@ -509,10 +578,14 @@ void PaymentsModule::on_tablePayments_clicked(const QModelIndex &index)
     }
 
     int row = index.row();
-    ui->lineEditPaymentID->setText(m_model->data(m_model->index(row, 0)).toString());
-    ui->comboBoxReservationID->setCurrentText(m_model->data(m_model->index(row, 1)).toString());
-    ui->lineEditAmount->setText(m_model->data(m_model->index(row, 2)).toString());
+    ui->lineEditReservationID->setText(m_model->data(m_model->index(row, 0)).toString());
+    ui->comboBoxReservationID->setCurrentText(m_model->data(m_model->index(row, 0)).toString());
+    ui->lineEditAmount->setText(m_model->data(m_model->index(row, 1)).toString());
+    ui->comboBoxPaymentStatus->setCurrentText(m_model->data(m_model->index(row, 2)).toString());
     ui->comboBoxPaymentMethod->setCurrentText(m_model->data(m_model->index(row, 3)).toString());
-    ui->dateEditPaymentDate->setDate(QDate::fromString(m_model->data(m_model->index(row, 4)).toString(), Qt::ISODate));
-    qDebug() << "Table row selected: Payment ID" << m_model->data(m_model->index(row, 0)).toString();
+    QVariant dateValue = m_model->data(m_model->index(row, 4));
+    ui->dateEditPaymentDate->setDate(dateValue.isNull() ? QDate::currentDate() : QDate::fromString(dateValue.toString(), Qt::ISODate));
+    ui->lineEditTransactionID->setText(m_model->data(m_model->index(row, 5)).toString());
+    ui->textEditPaymentNotes->setPlainText(m_model->data(m_model->index(row, 6)).toString());
+    qDebug() << "Table row selected: Reservation ID" << m_model->data(m_model->index(row, 0)).toString();
 }
