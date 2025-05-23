@@ -6,6 +6,7 @@
 #include <QSqlRecord>
 #include <QMessageBox>
 #include <QDate>
+#include <QDebug>
 
 Reservations::Reservations(QWidget *parent)
     : QWidget(parent), ui(new Ui::Reservations)
@@ -27,6 +28,7 @@ Reservations::Reservations(QWidget *parent)
     ui->dateEditCheckIn->setDate(QDate::currentDate());
     ui->dateEditCheckOut->setDate(QDate::currentDate().addDays(1));
     ui->userNameDisplay->clear();
+    ui->lineEditPreferred->clear();
 
     loadUsers();
     loadRooms();
@@ -45,6 +47,7 @@ void Reservations::loadUsers()
 {
     ui->comboBoxUser->clear();
     ui->userNameDisplay->clear();
+    ui->lineEditPreferred->clear();
 
     QSqlQuery query(m_db);
     if (!query.exec("SELECT user_id FROM users WHERE role = 'Customer' ORDER BY user_id")) {
@@ -124,6 +127,7 @@ void Reservations::clearForm()
 {
     ui->comboBoxUser->setCurrentIndex(-1);
     ui->userNameDisplay->clear();
+    ui->lineEditPreferred->clear();
     ui->comboBoxRoom->setCurrentIndex(-1);
     ui->dateEditCheckIn->setDate(QDate::currentDate());
     ui->dateEditCheckOut->setDate(QDate::currentDate().addDays(1));
@@ -151,6 +155,19 @@ void Reservations::populateForm(int row)
     int userIndex = ui->comboBoxUser->findData(userId);
     ui->comboBoxUser->setCurrentIndex(userIndex);
     ui->userNameDisplay->setText(userName);
+
+    // Fetch preferred_room_type from customers table
+    QSqlQuery query(m_db);
+    query.prepare("SELECT preferred_room_type FROM customers WHERE user_id = :user_id");
+    query.bindValue(":user_id", userId);
+    if (query.exec() && query.next()) {
+        QString preferredRoomType = query.value("preferred_room_type").toString();
+        ui->lineEditPreferred->setText(preferredRoomType);
+        qDebug() << "Populated preferred_room_type for user_id" << userId << ":" << preferredRoomType;
+    } else {
+        ui->lineEditPreferred->clear();
+        qDebug() << "No preferred_room_type found for user_id" << userId << "or query error:" << query.lastError().text();
+    }
 
     int roomIndex = ui->comboBoxRoom->findText(roomType);
     ui->comboBoxRoom->setCurrentIndex(roomIndex);
@@ -303,15 +320,24 @@ void Reservations::on_tableViewReservations_clicked(const QModelIndex &index)
 void Reservations::on_comboBoxUser_currentIndexChanged(int index)
 {
     ui->userNameDisplay->clear();
+    ui->lineEditPreferred->clear();
     if (index >= 0) {
         int userId = ui->comboBoxUser->currentData().toInt();
         QSqlQuery query(m_db);
-        query.prepare("SELECT full_name FROM users WHERE user_id = :user_id AND role = 'Customer'");
+        query.prepare("SELECT u.full_name, c.preferred_room_type "
+                      "FROM users u "
+                      "LEFT JOIN customers c ON u.user_id = c.user_id "
+                      "WHERE u.user_id = :user_id AND u.role = 'Customer'");
         query.bindValue(":user_id", userId);
         if (query.exec() && query.next()) {
-            ui->userNameDisplay->setText(query.value("full_name").toString());
+            QString fullName = query.value("full_name").toString();
+            QString preferredRoomType = query.value("preferred_room_type").toString();
+            ui->userNameDisplay->setText(fullName);
+            ui->lineEditPreferred->setText(preferredRoomType);
+            qDebug() << "Fetched for user_id" << userId << ": full_name =" << fullName << ", preferred_room_type =" << preferredRoomType;
         } else {
-            QMessageBox::critical(this, "Database Error", "Failed to fetch username: " + query.lastError().text());
+            QMessageBox::critical(this, "Database Error", "Failed to fetch user data: " + query.lastError().text());
+            qDebug() << "Query error for user_id" << userId << ":" << query.lastError().text();
         }
     }
 }
