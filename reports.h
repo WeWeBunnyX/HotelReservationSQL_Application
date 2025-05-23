@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QSqlDatabase>
 #include <QtCharts/QChartView>
+#include <QtCharts/QDateTimeAxis>
 #include <QTabWidget>
 
 QT_BEGIN_NAMESPACE

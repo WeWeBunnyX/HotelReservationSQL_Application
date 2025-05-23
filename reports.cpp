@@ -13,8 +13,9 @@
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QBarCategoryAxis>
 #include <QtCharts/QValueAxis>
+#include <QtCharts/QDateTimeAxis>
 #include <QtCharts/QChart>
-#include <QDate>
+#include <QDateTime>
 #include <QDebug>
 
 ReportsModule::ReportsModule(QWidget *parent)
@@ -52,8 +53,24 @@ void ReportsModule::showCharts()
     QBarSeries *loyaltySeries = createLoyaltyPointsHistogram();
     if (loyaltySeries) {
         loyaltyChart->addSeries(loyaltySeries);
-        loyaltyChart->createDefaultAxes();
+        QBarCategoryAxis *axisX = qobject_cast<QBarCategoryAxis*>(loyaltySeries->attachedAxes().value(0));
+        if (!axisX) {
+            axisX = new QBarCategoryAxis();
+            loyaltyChart->addAxis(axisX, Qt::AlignBottom);
+            loyaltySeries->attachAxis(axisX);
+        }
+        axisX->setTitleText("Loyalty Points Range");
+        qDebug() << "Loyalty Points X-Axis Categories:" << axisX->categories();
+        QValueAxis *axisY = new QValueAxis();
+        axisY->setTitleText("Number of Customers");
+        loyaltyChart->addAxis(axisY, Qt::AlignLeft);
+        loyaltySeries->attachAxis(axisY);
         loyaltyChart->setTitle("Loyalty Points Distribution");
+        QChartView *loyaltyChartView = new QChartView(loyaltyChart, this);
+        setupChartView(loyaltyChartView, tabWidget, "Loyalty Points");
+    } else {
+        qDebug() << "Loyalty Points: No data to display";
+        loyaltyChart->setTitle("Loyalty Points Distribution (No Data)");
         QChartView *loyaltyChartView = new QChartView(loyaltyChart, this);
         setupChartView(loyaltyChartView, tabWidget, "Loyalty Points");
     }
@@ -63,8 +80,24 @@ void ReportsModule::showCharts()
     QBarSeries *paymentMethodSeries = createPaymentMethodBarSeries();
     if (paymentMethodSeries) {
         paymentMethodChart->addSeries(paymentMethodSeries);
-        paymentMethodChart->createDefaultAxes();
+        QBarCategoryAxis *axisX = qobject_cast<QBarCategoryAxis*>(paymentMethodSeries->attachedAxes().value(0));
+        if (!axisX) {
+            axisX = new QBarCategoryAxis();
+            paymentMethodChart->addAxis(axisX, Qt::AlignBottom);
+            paymentMethodSeries->attachAxis(axisX);
+        }
+        axisX->setTitleText("Payment Method");
+        qDebug() << "Payment Methods X-Axis Categories:" << axisX->categories();
+        QValueAxis *axisY = new QValueAxis();
+        axisY->setTitleText("Total Amount ($)");
+        paymentMethodChart->addAxis(axisY, Qt::AlignLeft);
+        paymentMethodSeries->attachAxis(axisY);
         paymentMethodChart->setTitle("Total Amount by Payment Method");
+        QChartView *paymentMethodChartView = new QChartView(paymentMethodChart, this);
+        setupChartView(paymentMethodChartView, tabWidget, "Payment Methods");
+    } else {
+        qDebug() << "Payment Methods: No data to display";
+        paymentMethodChart->setTitle("Total Amount by Payment Method (No Data)");
         QChartView *paymentMethodChartView = new QChartView(paymentMethodChart, this);
         setupChartView(paymentMethodChartView, tabWidget, "Payment Methods");
     }
@@ -74,7 +107,16 @@ void ReportsModule::showCharts()
     QPieSeries *paymentStatusSeries = createPaymentStatusPieSeries();
     if (paymentStatusSeries) {
         paymentStatusChart->addSeries(paymentStatusSeries);
+        for (QPieSlice *slice : paymentStatusSeries->slices()) {
+            slice->setLabelVisible(true);
+            slice->setLabel(QString("%1 (%2)").arg(slice->label()).arg(slice->value()));
+        }
         paymentStatusChart->setTitle("Payment Status Distribution");
+        QChartView *paymentStatusChartView = new QChartView(paymentStatusChart, this);
+        setupChartView(paymentStatusChartView, tabWidget, "Payment Status");
+    } else {
+        qDebug() << "Payment Status: No data to display";
+        paymentStatusChart->setTitle("Payment Status Distribution (No Data)");
         QChartView *paymentStatusChartView = new QChartView(paymentStatusChart, this);
         setupChartView(paymentStatusChartView, tabWidget, "Payment Status");
     }
@@ -84,8 +126,34 @@ void ReportsModule::showCharts()
     QBarSeries *reservationsSeries = createReservationsByRoomTypeSeries();
     if (reservationsSeries) {
         reservationsChart->addSeries(reservationsSeries);
-        reservationsChart->createDefaultAxes();
+        QBarCategoryAxis *axisX = nullptr;
+        // Get the axis created by the series
+        for (QAbstractAxis *axis : reservationsSeries->attachedAxes()) {
+            if (axis->type() == QAbstractAxis::AxisTypeBarCategory) {
+                axisX = qobject_cast<QBarCategoryAxis*>(axis);
+                break;
+            }
+        }
+        if (!axisX) {
+            qDebug() << "Reservations: Creating new X-axis";
+            axisX = new QBarCategoryAxis();
+            // Fallback: Manually set categories if none provided
+            axisX->append({"Basement Suite", "Deluxe", "Suite"});
+            reservationsChart->addAxis(axisX, Qt::AlignBottom);
+            reservationsSeries->attachAxis(axisX);
+        }
+        axisX->setTitleText("Room Type");
+        qDebug() << "Reservations X-Axis Categories:" << axisX->categories();
+        QValueAxis *axisY = new QValueAxis();
+        axisY->setTitleText("Number of Reservations");
+        reservationsChart->addAxis(axisY, Qt::AlignLeft);
+        reservationsSeries->attachAxis(axisY);
         reservationsChart->setTitle("Reservations by Room Type");
+        QChartView *reservationsChartView = new QChartView(reservationsChart, this);
+        setupChartView(reservationsChartView, tabWidget, "Reservations");
+    } else {
+        qDebug() << "Reservations: No data to display";
+        reservationsChart->setTitle("Reservations by Room Type (No Data)");
         QChartView *reservationsChartView = new QChartView(reservationsChart, this);
         setupChartView(reservationsChartView, tabWidget, "Reservations");
     }
@@ -95,8 +163,21 @@ void ReportsModule::showCharts()
     QLineSeries *revenueSeries = createRevenueByMonthSeries();
     if (revenueSeries) {
         revenueChart->addSeries(revenueSeries);
-        revenueChart->createDefaultAxes();
+        QDateTimeAxis *axisX = new QDateTimeAxis();
+        axisX->setFormat("MMM yyyy");
+        axisX->setTitleText("Month");
+        revenueChart->addAxis(axisX, Qt::AlignBottom);
+        revenueSeries->attachAxis(axisX);
+        QValueAxis *axisY = new QValueAxis();
+        axisY->setTitleText("Revenue ($)");
+        revenueChart->addAxis(axisY, Qt::AlignLeft);
+        revenueSeries->attachAxis(axisY);
         revenueChart->setTitle("Revenue by Month");
+        QChartView *revenueChartView = new QChartView(revenueChart, this);
+        setupChartView(revenueChartView, tabWidget, "Revenue");
+    } else {
+        qDebug() << "Revenue: No data to display";
+        revenueChart->setTitle("Revenue by Month (No Data)");
         QChartView *revenueChartView = new QChartView(revenueChart, this);
         setupChartView(revenueChartView, tabWidget, "Revenue");
     }
@@ -106,7 +187,16 @@ void ReportsModule::showCharts()
     QPieSeries *roomStatusSeries = createRoomStatusPieSeries();
     if (roomStatusSeries) {
         roomStatusChart->addSeries(roomStatusSeries);
+        for (QPieSlice *slice : roomStatusSeries->slices()) {
+            slice->setLabelVisible(true);
+            slice->setLabel(QString("%1 (%2)").arg(slice->label()).arg(slice->value()));
+        }
         roomStatusChart->setTitle("Room Status Distribution");
+        QChartView *roomStatusChartView = new QChartView(roomStatusChart, this);
+        setupChartView(roomStatusChartView, tabWidget, "Room Status");
+    } else {
+        qDebug() << "Room Status: No data to display";
+        roomStatusChart->setTitle("Room Status Distribution (No Data)");
         QChartView *roomStatusChartView = new QChartView(roomStatusChart, this);
         setupChartView(roomStatusChartView, tabWidget, "Room Status");
     }
@@ -137,7 +227,7 @@ QBarSeries* ReportsModule::createLoyaltyPointsHistogram()
 
     QSqlQuery query(m_db);
     if (!query.exec("SELECT loyalty_points FROM customers")) {
-        qDebug() << "Query error:" << query.lastError().text();
+        qDebug() << "Loyalty Points Query Error:" << query.lastError().text();
         delete series;
         return nullptr;
     }
@@ -154,6 +244,7 @@ QBarSeries* ReportsModule::createLoyaltyPointsHistogram()
     }
 
     if (bins.isEmpty()) {
+        qDebug() << "Loyalty Points: Empty dataset";
         delete series;
         return nullptr;
     }
@@ -178,19 +269,24 @@ QBarSeries* ReportsModule::createPaymentMethodBarSeries()
 
     QSqlQuery query(m_db);
     if (!query.exec("SELECT payment_method, SUM(total_amount) AS total FROM reservations WHERE payment_method IS NOT NULL GROUP BY payment_method")) {
-        qDebug() << "Query error:" << query.lastError().text();
+        qDebug() << "Payment Method Query Error:" << query.lastError().text();
         delete series;
         return nullptr;
     }
 
+    int rowCount = 0;
     while (query.next()) {
         QString method = query.value(0).toString();
         double amount = query.value(1).toDouble();
         amounts[method] = amount;
         categories << method;
+        rowCount++;
     }
 
+    qDebug() << "Payment Method: Retrieved" << rowCount << "rows";
+
     if (amounts.isEmpty()) {
+        qDebug() << "Payment Method: Empty dataset";
         delete series;
         return nullptr;
     }
@@ -213,7 +309,7 @@ QPieSeries* ReportsModule::createPaymentStatusPieSeries()
 
     QSqlQuery query(m_db);
     if (!query.exec("SELECT payment_status, COUNT(*) FROM reservations GROUP BY payment_status")) {
-        qDebug() << "Query error:" << query.lastError().text();
+        qDebug() << "Payment Status Query Error:" << query.lastError().text();
         delete series;
         return nullptr;
     }
@@ -225,6 +321,7 @@ QPieSeries* ReportsModule::createPaymentStatusPieSeries()
     }
 
     if (counts.isEmpty()) {
+        qDebug() << "Payment Status: Empty dataset";
         delete series;
         return nullptr;
     }
@@ -244,19 +341,27 @@ QBarSeries* ReportsModule::createReservationsByRoomTypeSeries()
 
     QSqlQuery query(m_db);
     if (!query.exec("SELECT rm.room_type, COUNT(r.reservation_id) FROM reservations r JOIN rooms rm ON r.room_id = rm.room_id GROUP BY rm.room_type")) {
-        qDebug() << "Query error:" << query.lastError().text();
+        qDebug() << "Reservations Query Error:" << query.lastError().text();
         delete series;
         return nullptr;
     }
 
+    int rowCount = 0;
     while (query.next()) {
         QString roomType = query.value(0).toString();
         int count = query.value(1).toInt();
+        qDebug() << "Reservations Room Type:" << roomType << "Count:" << count;
         counts[roomType] = count;
-        categories << roomType;
+        if (!categories.contains(roomType)) {
+            categories << roomType;
+        }
+        rowCount++;
     }
 
+    qDebug() << "Reservations: Retrieved" << rowCount << "rows with categories:" << categories;
+
     if (counts.isEmpty()) {
+        qDebug() << "Reservations: Empty dataset";
         delete series;
         return nullptr;
     }
@@ -268,18 +373,20 @@ QBarSeries* ReportsModule::createReservationsByRoomTypeSeries()
 
     QBarCategoryAxis *axisX = new QBarCategoryAxis();
     axisX->append(categories);
+    axisX->setTitleText("Room Type");
     series->attachAxis(axisX);
+    qDebug() << "Reservations Series X-Axis Categories:" << axisX->categories();
     return series;
 }
 
 QLineSeries* ReportsModule::createRevenueByMonthSeries()
 {
     QLineSeries *series = new QLineSeries();
-    QMap<QString, double> revenue;
+    QMap<QString, QPair<QDateTime, double>> revenue;
 
     QSqlQuery query(m_db);
     if (!query.exec("SELECT TO_CHAR(check_in_date, 'YYYY-MM') AS month, SUM(total_amount) FROM reservations GROUP BY month ORDER BY month")) {
-        qDebug() << "Query error:" << query.lastError().text();
+        qDebug() << "Revenue Query Error:" << query.lastError().text();
         delete series;
         return nullptr;
     }
@@ -287,16 +394,18 @@ QLineSeries* ReportsModule::createRevenueByMonthSeries()
     while (query.next()) {
         QString month = query.value(0).toString();
         double amount = query.value(1).toDouble();
-        revenue[month] = amount;
+        QDateTime date = QDate::fromString(month + "-01", "yyyy-MM-dd").startOfDay();
+        revenue[month] = qMakePair(date, amount);
     }
 
     if (revenue.isEmpty()) {
+        qDebug() << "Revenue: Empty dataset";
         delete series;
         return nullptr;
     }
 
     for (auto it = revenue.constBegin(); it != revenue.constEnd(); ++it) {
-        series->append(QPointF(QDate::fromString(it.key() + "-01", "yyyy-MM-dd").toJulianDay(), it.value()));
+        series->append(it.value().first.toMSecsSinceEpoch(), it.value().second);
     }
     return series;
 }
@@ -308,7 +417,7 @@ QPieSeries* ReportsModule::createRoomStatusPieSeries()
 
     QSqlQuery query(m_db);
     if (!query.exec("SELECT status, COUNT(*) FROM rooms GROUP BY status")) {
-        qDebug() << "Query error:" << query.lastError().text();
+        qDebug() << "Room Status Query Error:" << query.lastError().text();
         delete series;
         return nullptr;
     }
@@ -320,6 +429,7 @@ QPieSeries* ReportsModule::createRoomStatusPieSeries()
     }
 
     if (counts.isEmpty()) {
+        qDebug() << "Room Status: Empty dataset";
         delete series;
         return nullptr;
     }
