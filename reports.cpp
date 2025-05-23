@@ -179,19 +179,33 @@ void ReportsModule::showCharts()
         QDateTimeAxis *axisX = new QDateTimeAxis();
         axisX->setFormat("MMM yyyy");
         axisX->setTitleText("Month");
+        axisX->setTickCount(6); // Show ~6 months for readability
+        // Set range to include data point (e.g., Jan 2025 to Dec 2025)
+        QDateTime minDate(QDate(2025, 1, 1), QTime(0, 0), Qt::UTC);
+        QDateTime maxDate(QDate(2025, 12, 31), QTime(0, 0), Qt::UTC);
+        axisX->setRange(minDate, maxDate);
         revenueChart->addAxis(axisX, Qt::AlignBottom);
         revenueSeries->attachAxis(axisX);
         QValueAxis *axisY = new QValueAxis();
         axisY->setTitleText("Revenue ($)");
+        axisY->setLabelFormat("%.0f"); // Whole numbers for large values
+        // Set range to fit $193,000
+        axisY->setRange(0, 200000);
         revenueChart->addAxis(axisY, Qt::AlignLeft);
         revenueSeries->attachAxis(axisY);
         revenueChart->setTitle("Revenue by Month");
         QChartView *revenueChartView = new QChartView(revenueChart, this);
+        revenueChartView->setMinimumSize(800, 600);
+        revenueChartView->setRenderHint(QPainter::Antialiasing);
         setupChartView(revenueChartView, tabWidget, "Revenue");
+        // Log axis ranges
+        qDebug() << "Revenue X-Axis Range:" << axisX->min().toString("MMM yyyy") << "to" << axisX->max().toString("MMM yyyy");
+        qDebug() << "Revenue Y-Axis Range:" << axisY->min() << "to" << axisY->max();
     } else {
         qDebug() << "Revenue: No data to display";
         revenueChart->setTitle("Revenue by Month (No Data)");
         QChartView *revenueChartView = new QChartView(revenueChart, this);
+        revenueChartView->setMinimumSize(800, 600);
         setupChartView(revenueChartView, tabWidget, "Revenue");
     }
 
@@ -402,21 +416,31 @@ QBarSeries* ReportsModule::createReservationsByRoomTypeSeries()
 QLineSeries* ReportsModule::createRevenueByMonthSeries()
 {
     QLineSeries *series = new QLineSeries();
+    series->setPointsVisible(true); // Show points even with one data point
     QMap<QString, QPair<QDateTime, double>> revenue;
 
     QSqlQuery query(m_db);
-    if (!query.exec("SELECT TO_CHAR(check_in_date, 'YYYY-MM') AS month, SUM(total_amount) FROM reservations GROUP BY month ORDER BY month")) {
+    if (!query.exec("SELECT TO_CHAR(check_in_date, 'YYYY-MM') AS month, SUM(total_amount) FROM reservations WHERE check_in_date IS NOT NULL GROUP BY month ORDER BY month")) {
         qDebug() << "Revenue Query Error:" << query.lastError().text();
         delete series;
         return nullptr;
     }
 
+    int rowCount = 0;
     while (query.next()) {
         QString month = query.value(0).toString();
         double amount = query.value(1).toDouble();
         QDateTime date = QDate::fromString(month + "-01", "yyyy-MM-dd").startOfDay();
-        revenue[month] = qMakePair(date, amount);
+        if (date.isValid()) {
+            revenue[month] = qMakePair(date, amount);
+            qDebug() << "Revenue Month:" << month << "Amount:" << amount << "Date:" << date.toString("MMM yyyy");
+        } else {
+            qDebug() << "Revenue Invalid Date for month:" << month;
+        }
+        rowCount++;
     }
+
+    qDebug() << "Revenue: Retrieved" << rowCount << "rows";
 
     if (revenue.isEmpty()) {
         qDebug() << "Revenue: Empty dataset";
@@ -426,7 +450,9 @@ QLineSeries* ReportsModule::createRevenueByMonthSeries()
 
     for (auto it = revenue.constBegin(); it != revenue.constEnd(); ++it) {
         series->append(it.value().first.toMSecsSinceEpoch(), it.value().second);
+        qDebug() << "Revenue Series Point:" << it.value().first.toString("MMM yyyy") << it.value().second;
     }
+
     return series;
 }
 
