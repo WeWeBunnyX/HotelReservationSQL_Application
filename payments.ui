@@ -95,7 +95,7 @@
       <widget class="QComboBox" name="comboBoxPaymentMethod">
        <item>
         <property name="text">
-         <string>Card</string>
+         <string>Debit/Credit Card</string>
         </property>
        </item>
        <item>
@@ -105,12 +105,7 @@
        </item>
        <item>
         <property name="text">
-         <string>Online</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Other</string>
+         <string>Online (Bank Transfer/Digital Wallet)</string>
         </property>
        </item>
       </widget>
