@@ -53,8 +53,15 @@ void ReportsModule::showCharts()
     QBarSeries *loyaltySeries = createLoyaltyPointsHistogram();
     if (loyaltySeries) {
         loyaltyChart->addSeries(loyaltySeries);
-        QBarCategoryAxis *axisX = qobject_cast<QBarCategoryAxis*>(loyaltySeries->attachedAxes().value(0));
+        QBarCategoryAxis *axisX = nullptr;
+        for (QAbstractAxis *axis : loyaltySeries->attachedAxes()) {
+            if (axis->type() == QAbstractAxis::AxisTypeBarCategory) {
+                axisX = qobject_cast<QBarCategoryAxis*>(axis);
+                break;
+            }
+        }
         if (!axisX) {
+            qDebug() << "Loyalty Points: Creating new X-axis";
             axisX = new QBarCategoryAxis();
             loyaltyChart->addAxis(axisX, Qt::AlignBottom);
             loyaltySeries->attachAxis(axisX);
@@ -80,9 +87,17 @@ void ReportsModule::showCharts()
     QBarSeries *paymentMethodSeries = createPaymentMethodBarSeries();
     if (paymentMethodSeries) {
         paymentMethodChart->addSeries(paymentMethodSeries);
-        QBarCategoryAxis *axisX = qobject_cast<QBarCategoryAxis*>(paymentMethodSeries->attachedAxes().value(0));
+        QBarCategoryAxis *axisX = nullptr;
+        for (QAbstractAxis *axis : paymentMethodSeries->attachedAxes()) {
+            if (axis->type() == QAbstractAxis::AxisTypeBarCategory) {
+                axisX = qobject_cast<QBarCategoryAxis*>(axis);
+                break;
+            }
+        }
         if (!axisX) {
+            qDebug() << "Payment Methods: Creating new X-axis";
             axisX = new QBarCategoryAxis();
+            axisX->append({"Card", "Cash", "Online"});
             paymentMethodChart->addAxis(axisX, Qt::AlignBottom);
             paymentMethodSeries->attachAxis(axisX);
         }
@@ -127,7 +142,6 @@ void ReportsModule::showCharts()
     if (reservationsSeries) {
         reservationsChart->addSeries(reservationsSeries);
         QBarCategoryAxis *axisX = nullptr;
-        // Get the axis created by the series
         for (QAbstractAxis *axis : reservationsSeries->attachedAxes()) {
             if (axis->type() == QAbstractAxis::AxisTypeBarCategory) {
                 axisX = qobject_cast<QBarCategoryAxis*>(axis);
@@ -137,7 +151,6 @@ void ReportsModule::showCharts()
         if (!axisX) {
             qDebug() << "Reservations: Creating new X-axis";
             axisX = new QBarCategoryAxis();
-            // Fallback: Manually set categories if none provided
             axisX->append({"Basement Suite", "Deluxe", "Suite"});
             reservationsChart->addAxis(axisX, Qt::AlignBottom);
             reservationsSeries->attachAxis(axisX);
@@ -256,7 +269,9 @@ QBarSeries* ReportsModule::createLoyaltyPointsHistogram()
 
     QBarCategoryAxis *axisX = new QBarCategoryAxis();
     axisX->append(categories);
+    axisX->setTitleText("Loyalty Points Range");
     series->attachAxis(axisX);
+    qDebug() << "Loyalty Points Series X-Axis Categories:" << axisX->categories();
     return series;
 }
 
@@ -278,12 +293,15 @@ QBarSeries* ReportsModule::createPaymentMethodBarSeries()
     while (query.next()) {
         QString method = query.value(0).toString();
         double amount = query.value(1).toDouble();
+        qDebug() << "Payment Method:" << method << "Total:" << amount;
         amounts[method] = amount;
-        categories << method;
+        if (!categories.contains(method)) {
+            categories << method;
+        }
         rowCount++;
     }
 
-    qDebug() << "Payment Method: Retrieved" << rowCount << "rows";
+    qDebug() << "Payment Method: Retrieved" << rowCount << "rows with categories:" << categories;
 
     if (amounts.isEmpty()) {
         qDebug() << "Payment Method: Empty dataset";
@@ -298,7 +316,9 @@ QBarSeries* ReportsModule::createPaymentMethodBarSeries()
 
     QBarCategoryAxis *axisX = new QBarCategoryAxis();
     axisX->append(categories);
+    axisX->setTitleText("Payment Method");
     series->attachAxis(axisX);
+    qDebug() << "Payment Methods Series X-Axis Categories:" << axisX->categories();
     return series;
 }
 
