@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>Reservations</class>
  <widget class="QWidget" name="Reservations">
@@ -112,7 +112,7 @@
         <number>2</number>
        </property>
        <property name="maximum">
-        <double>100000.000000</double>
+        <double>100000.000000000000000</double>
        </property>
       </widget>
      </item>
@@ -200,7 +200,11 @@
     </layout>
    </item>
    <item>
-    <widget class="QTableView" name="tableViewReservations"/>
+    <widget class="QTableView" name="tableViewReservations">
+     <attribute name="horizontalHeaderStretchLastSection">
+      <bool>true</bool>
+     </attribute>
+    </widget>
    </item>
   </layout>
  </widget>
