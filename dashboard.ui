@@ -361,7 +361,7 @@
            <item row="1" column="0">
             <widget class="QStackedWidget" name="stackedWidget">
              <property name="currentIndex">
-              <number>0</number>
+              <number>6</number>
              </property>
              <widget class="MainWindow" name="homePage">
               <layout class="QGridLayout" name="gridLayout_3">
@@ -555,7 +555,7 @@
                </item>
               </layout>
              </widget>
-             <widget class="QWidget" name="settingPage">
+             <widget class="Settings" name="settingPage">
               <layout class="QGridLayout" name="gridLayout_4">
                <property name="leftMargin">
                 <number>300</number>
@@ -580,7 +580,7 @@
                   </font>
                  </property>
                  <property name="text">
-                  <string>Settings Page</string>
+                  <string/>
                  </property>
                 </widget>
                </item>
@@ -846,6 +846,12 @@
    <class>MainWindow</class>
    <extends>QWidget</extends>
    <header>mainwindow.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Settings</class>
+   <extends>QWidget</extends>
+   <header>settings.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

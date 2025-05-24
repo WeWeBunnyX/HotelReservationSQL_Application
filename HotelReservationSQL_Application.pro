@@ -17,7 +17,8 @@ SOURCES += \
     database.cpp \
     mainwindow.cpp \
     registerscreen.cpp \
-    reservations.cpp
+    reservations.cpp \
+    settings.cpp
 
 HEADERS += \
     customers.h \
@@ -30,7 +31,8 @@ HEADERS += \
     loginscreen.h \
     mainwindow.h \
     registerscreen.h \
-    reservations.h
+    reservations.h \
+    settings.h
 
 FORMS += \
     customers.ui \
@@ -42,7 +44,8 @@ FORMS += \
     loginscreen.ui \
     mainwindow.ui \
     registerscreen.ui \
-    reservations.ui
+    reservations.ui \
+    settings.ui
 
 RESOURCES += \
     customers.cpp \
@@ -51,5 +54,11 @@ RESOURCES += \
     reports.cpp \
  \
     resources.qrc
+
+
+TRANSLATIONS += \
+    translations/app_en.ts \
+    translations/app_es.ts \
+    translations/app_fr.ts
 
 
