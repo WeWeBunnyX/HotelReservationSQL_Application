@@ -11,37 +11,109 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Hotel Reservation System</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+    QMainWindow {
+        background-color: #f0f0f0;
+        font-family: 'Segoe UI', Arial, sans-serif;
+    }
+   </string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
-    <item>
-     <widget class="QPushButton" name="btn_customers">
+    <item alignment="Qt::AlignCenter">
+     <widget class="QLabel" name="appLogoLabel">
       <property name="text">
-       <string>Customers</string>
+       <string>[App Logo]</string>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">
+        font-size: 16px;
+        color: #333333;
+        padding: 10px;
+        background-color: transparent;
+       </string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
       </property>
      </widget>
     </item>
-    <item>
-     <widget class="QPushButton" name="btn_rooms">
+    <item alignment="Qt::AlignCenter">
+     <widget class="QLabel" name="welcomeLabel">
+      <property name="styleSheet">
+       <string notr="true">
+        font-size: 25px;
+        color: #333333;
+        padding: 20px;
+        background-color: transparent;
+       </string>
+      </property>
       <property name="text">
-       <string>Rooms</string>
+       <string><![CDATA[Welcome to the Hotel Reservation System, a powerful and user-friendly application designed to streamline hotel management. Effortlessly manage reservations, customers, rooms, payments, and reports with a modern, intuitive interface. Built with precision and care, this application ensures efficiency and reliability for hotel staff and administrators.
+
+<b>An application by Hashir and Hasan.</b>
+
+See the <a href="license" style="color: #70B9FE; text-decoration: underline;">license file</a> or visit our <a href="github" style="color: #70B9FE; text-decoration: underline;">GitHub repository</a>.]]></string>
+      </property>
+      <property name="textFormat">
+       <enum>Qt::RichText</enum>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+      <property name="openExternalLinks">
+       <bool>true</bool>
+      </property>
+      <property name="textInteractionFlags">
+       <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
       </property>
      </widget>
     </item>
-    <item>
-     <widget class="QPushButton" name="btn_payments">
-      <property name="text">
-       <string>Payments</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QPushButton" name="btn_reports">
-      <property name="text">
-       <string>Reports</string>
-      </property>
-     </widget>
+    <item alignment="Qt::AlignCenter">
+     <layout class="QHBoxLayout" name="qtLayout">
+      <item>
+       <widget class="QLabel" name="qtLogoLabel">
+        <property name="text">
+         <string>[Qt Logo]</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">
+          font-size: 16px;
+          color: #333333;
+          padding: 10px;
+          background-color: transparent;
+         </string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="qtTextLabel">
+        <property name="text">
+         <string>Built with Qt</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">
+          font-size: 16px;
+          color: #333333;
+          padding: 10px;
+          background-color: transparent;
+         </string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>
@@ -51,7 +123,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>18</height>
+     <height>24</height>
     </rect>
    </property>
   </widget>
@@ -59,10 +131,4 @@
  </widget>
  <resources/>
  <connections/>
- <slots>
-  <slot>openCustomers()</slot>
-  <slot>openRooms()</slot>
-  <slot>openPayments()</slot>
-  <slot>openReports()</slot>
- </slots>
 </ui>

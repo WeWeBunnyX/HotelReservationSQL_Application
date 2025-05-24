@@ -13,6 +13,154 @@
   <property name="windowTitle">
    <string>Reservations</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">Reservations {
+    background-color: #f0f0f0;
+    color: #333333;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 13px;
+}
+
+QLabel {
+    font-size: 14px;
+    color: #333333;
+}
+
+QPushButton {
+    background-color: #70B9FE;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 15px;
+    font-size: 13px;
+    min-height: 30px;
+    min-width: 80px;
+}
+
+QPushButton:hover {
+    background-color: #5aa9fe;
+}
+
+QPushButton:pressed {
+    background-color: #4a99fe;
+}
+
+QLineEdit {
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    padding: 6px;
+    font-size: 13px;
+    color: #333333;
+}
+
+QLineEdit:focus {
+    border-color: #70B9FE;
+    box-shadow: 0 0 5px rgba(112, 185, 254, 0.5);
+}
+
+QLineEdit:read-only {
+    background-color: #e6e6e6;
+    color: #666666;
+}
+
+QComboBox {
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    padding: 6px;
+    font-size: 13px;
+    color: #333333;
+    min-width: 150px;
+}
+
+QComboBox:hover {
+    border-color: #70B9FE;
+}
+
+QComboBox:focus {
+    border-color: #70B9FE;
+    box-shadow: 0 0 5px rgba(112, 185, 254, 0.5);
+}
+
+QComboBox::drop-down {
+    border: none;
+    width: 20px;
+}
+
+QComboBox QAbstractItemView {
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    selection-background-color: #70B9FE;
+    selection-color: #ffffff;
+    color: #333333;
+}
+
+QDateEdit {
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    padding: 6px;
+    font-size: 13px;
+    color: #333333;
+}
+
+QDateEdit:focus {
+    border-color: #70B9FE;
+    box-shadow: 0 0 5px rgba(112, 185, 254, 0.5);
+}
+
+QDateEdit::drop-down {
+    border: none;
+    width: 20px;
+}
+
+QDoubleSpinBox {
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    padding: 6px;
+    font-size: 13px;
+    color: #333333;
+    min-width: 100px;
+}
+
+QDoubleSpinBox:focus {
+    border-color: #70B9FE;
+    box-shadow: 0 0 5px rgba(112, 185, 254, 0.5);
+}
+
+QTableView {
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    gridline-color: #e6e6e6;
+    font-size: 12px;
+    color: #333333;
+}
+
+QTableView::item {
+    padding: 4px;
+}
+
+QTableView::item:selected {
+    background-color: #70B9FE;
+    color: #ffffff;
+}
+
+QHeaderView::section {
+    background-color: #e6e6e6;
+    border: none;
+    padding: 6px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #333333;
+}
+
+QHeaderView::section:hover {
+    background-color: #d6d6d6;
+}</string>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QGridLayout" name="formLayout">

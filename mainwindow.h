@@ -7,6 +7,7 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+class Dashboard;
 class CustomersModule;
 class RoomsModule;
 class PaymentsModule;
@@ -21,18 +22,15 @@ public:
     ~MainWindow();
 
 private slots:
-    void openCustomers();
-    void openRooms();
-    void openPayments();
-    void openReports();
+    void onLinkActivated(const QString &link);
 
 private:
     Ui::MainWindow *ui;
-
-    CustomersModule *customersWindow;
-    RoomsModule *roomsWindow;
-    PaymentsModule *paymentsWindow;
-    ReportsModule *reportsWindow;
+    Dashboard *dashboard;
+    CustomersModule *customersModule;
+    RoomsModule *roomsModule;
+    PaymentsModule *paymentsModule;
+    ReportsModule *reportsModule;
 };
 
 #endif // MAINWINDOW_H

@@ -416,7 +416,7 @@ QBarSeries* ReportsModule::createReservationsByRoomTypeSeries()
 QLineSeries* ReportsModule::createRevenueByMonthSeries()
 {
     QLineSeries *series = new QLineSeries();
-    series->setPointsVisible(true); // Show points even with one data point
+    series->setPointsVisible(true);
     QMap<QString, QPair<QDateTime, double>> revenue;
 
     QSqlQuery query(m_db);

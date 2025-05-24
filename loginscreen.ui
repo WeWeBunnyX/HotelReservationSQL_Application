@@ -13,13 +13,72 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">LoginScreen {
+    background-color: #f0f0f0;
+    color: #333333;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 13px;
+}
+
+QGroupBox {
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333333;
+    margin-top: 10px;
+    padding: 10px;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+    padding: 0 5px;
+    left: 10px;
+}
+
+QLineEdit {
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    padding: 6px;
+    font-size: 13px;
+    color: #333333;
+}
+
+QLineEdit:focus {
+    border-color: #70B9FE;
+    box-shadow: 0 0 5px rgba(112, 185, 254, 0.5);
+}
+
+QPushButton {
+    background-color: #70B9FE;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 15px;
+    font-size: 13px;
+    min-height: 30px;
+    min-width: 100px;
+}
+
+QPushButton:hover {
+    background-color: #5aa9fe;
+}
+
+QPushButton:pressed {
+    background-color: #4a99fe;
+}</string>
+  </property>
   <widget class="QPushButton" name="LoginButton">
    <property name="geometry">
     <rect>
      <x>130</x>
      <y>180</y>
-     <width>121</width>
-     <height>31</height>
+     <width>130</width>
+     <height>46</height>
     </rect>
    </property>
    <property name="text">
@@ -36,7 +95,7 @@
     </rect>
    </property>
    <property name="title">
-    <string>LoginBox</string>
+    <string>Login</string>
    </property>
    <widget class="QLineEdit" name="username">
     <property name="geometry">
