@@ -2,6 +2,7 @@
 #include "ui_settings.h"
 #include <QSettings>
 #include <QApplication>
+#include <QMessageBox>
 
 Settings::Settings(QWidget *parent) :
     QWidget(parent),
@@ -39,11 +40,9 @@ void Settings::onSaveButtonClicked()
     settings.setValue("language", language);
     emit languageChanged(language);
 
-
     bool isDark = ui->themeCheckBox->isChecked();
     settings.setValue("theme", isDark);
     emit themeChanged(isDark);
-
 
     QString fontSizeStr = ui->fontSizeComboBox->currentText();
     int fontSize = 16; // Default (Medium)
@@ -52,7 +51,6 @@ void Settings::onSaveButtonClicked()
     settings.setValue("fontSize", fontSizeStr);
     emit fontSizeChanged(fontSize);
 
-
     QString autoSaveStr = ui->autoSaveComboBox->currentText();
     int interval = 0; // Off
     if (autoSaveStr == "1 Minute") interval = 60;
@@ -60,5 +58,6 @@ void Settings::onSaveButtonClicked()
     settings.setValue("autoSave", autoSaveStr);
     emit autoSaveIntervalChanged(interval);
 
-    close();
+    // Show success message
+    QMessageBox::information(this, "Success", "Settings applied successfully");
 }
