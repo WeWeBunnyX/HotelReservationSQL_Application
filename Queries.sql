@@ -88,4 +88,14 @@ ADD CONSTRAINT reservations_payment_method_check
 
 CREATE UNIQUE INDEX transaction_id_idx ON reservations(transaction_id);
 
+ALTER TABLE reservations DROP CONSTRAINT reservations_payment_method_check;
+ALTER TABLE reservations
+ALTER COLUMN payment_method TYPE VARCHAR(100),
+ALTER COLUMN payment_notes TYPE VARCHAR(100);
+ALTER TABLE reservations
+ADD CONSTRAINT reservations_payment_method_check
+CHECK (payment_method IN ('Card', 'Cash', 'Online', 'Other', 'Online (Bank Transfer/Digital Wallet)'));
+ALTER TABLE
+
+
 
