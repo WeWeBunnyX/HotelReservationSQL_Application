@@ -19,7 +19,6 @@ Settings::Settings(QWidget *parent) :
 
     // Set UI elements to saved values
     ui->languageComboBox->setCurrentText(language);
-    ui->themeCheckBox->setChecked(isDark);
     ui->fontSizeComboBox->setCurrentText(fontSize);
     ui->autoSaveComboBox->setCurrentText(autoSave);
 
