@@ -13,7 +13,6 @@ Settings::Settings(QWidget *parent) :
     // Load saved settings
     QSettings settings("HotelReservation", "AppSettings");
     QString language = settings.value("language", "English").toString();
-    bool isDark = settings.value("theme", false).toBool();
     QString fontSize = settings.value("fontSize", "Medium (16px)").toString();
     QString autoSave = settings.value("autoSave", "Off").toString();
 
