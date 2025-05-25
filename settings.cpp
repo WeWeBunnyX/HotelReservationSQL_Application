@@ -40,10 +40,6 @@ void Settings::onSaveButtonClicked()
     settings.setValue("language", language);
     emit languageChanged(language);
 
-    bool isDark = ui->themeCheckBox->isChecked();
-    settings.setValue("theme", isDark);
-    emit themeChanged(isDark);
-
     QString fontSizeStr = ui->fontSizeComboBox->currentText();
     int fontSize = 16; // Default (Medium)
     if (fontSizeStr == "Small (12px)") fontSize = 12;
