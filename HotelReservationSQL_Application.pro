@@ -56,9 +56,5 @@ RESOURCES += \
     resources.qrc
 
 
-TRANSLATIONS += \
-    translations/app_en.ts \
-    translations/app_es.ts \
-    translations/app_fr.ts
 
 

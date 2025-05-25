@@ -2,6 +2,8 @@
 #include <QSqlDatabase>
 #include <QDebug>
 #include "database.h"
+#include "loginscreen.h"
+
 // #include "mainwindow.h"
 // #include "loginscreen.h"
 // #include "registerscreen.h"
@@ -15,6 +17,9 @@ int main(int argc, char *argv[])
     sqlDriverCheck();
     setDatabaseConnection();
 
+    LoginScreen login;
+    login.show();
+
     // MainWindow w;
     // w.show();
 
@@ -24,8 +29,8 @@ int main(int argc, char *argv[])
     //RegisterScreen r;
     //r.show();
 
-    Dashboard d;
-    d.show();
+    // Dashboard d;
+    // d.show();
 
     // Reservations r;
     // r.show();
