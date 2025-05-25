@@ -13,6 +13,7 @@ Settings::Settings(QWidget *parent) :
     // Load saved settings
     QSettings settings("HotelReservation", "AppSettings");
     QString language = settings.value("language", "English").toString();
+
     QString fontSize = settings.value("fontSize", "Medium (16px)").toString();
     QString autoSave = settings.value("autoSave", "Off").toString();
 
@@ -52,6 +53,6 @@ void Settings::onSaveButtonClicked()
     settings.setValue("autoSave", autoSaveStr);
     emit autoSaveIntervalChanged(interval);
 
-    // Show success message
+
     QMessageBox::information(this, "Success", "Settings applied successfully");
 }
