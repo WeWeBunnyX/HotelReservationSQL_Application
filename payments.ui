@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>635</width>
-    <height>641</height>
+    <width>835</width>
+    <height>941</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,7 +26,7 @@ QLabel {
     color: #333333;
 }
 
-QLabel[styleSheet*="font-weight: bold"] {
+QLabel[styleSheet*=&quot;font-weight: bold&quot;] {
     font-size: 18px;
     font-weight: bold;
 }
@@ -112,8 +112,8 @@ QTextEdit {
     padding: 6px;
     font-size: 13px;
     color: #333333;
-    min-height: 40px;  /* Reduced from 80px */
-    max-height: 60px;  /* Added to limit growth */
+    min-height: 40px;
+    max-height: 60px;
 }
 
 QTextEdit:focus {
@@ -358,6 +358,23 @@ QHeaderView::section:hover {
       <bool>true</bool>
      </attribute>
     </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
