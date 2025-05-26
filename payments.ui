@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>635</width>
-    <height>602</height>
+    <height>641</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -112,7 +112,8 @@ QTextEdit {
     padding: 6px;
     font-size: 13px;
     color: #333333;
-    min-height: 80px;
+    min-height: 40px;  /* Reduced from 80px */
+    max-height: 60px;  /* Added to limit growth */
 }
 
 QTextEdit:focus {
@@ -161,7 +162,7 @@ QHeaderView::section:hover {
       <string>Payments</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignCenter</set>
+      <set>Qt::AlignmentFlag::AlignCenter</set>
      </property>
     </widget>
    </item>
